@@ -2,6 +2,8 @@ package com.example.profile_management.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,5 +22,9 @@ public class UserController {
     @GetMapping("/{username}")
     public Users getUserByUsername(@PathVariable String username) {
         return usersRepository.findById(username).orElse(null);
+    }
+    @PostMapping 
+    public void createNewUser(@RequestBody Users user) {
+        usersRepository.save(user);
     }
 }
