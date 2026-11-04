@@ -26,5 +26,21 @@ public class UserController {
     @PostMapping 
     public void createNewUser(@RequestBody Users user) {
         usersRepository.save(user);
+
+    @PutMapping("/{username}")
+    public void updateUserFields(@PathVariable String username, @RequestBody Users updatedFields) {
+        Users storedUser = usersRepository.findById(username).orElse(null);
+        if (storedUser != null) {
+           if (updatedFields.getUserPassword() != null) {
+                storedUser.setUserPassword(updatedFields.getUserPassword());
+            }
+           if (updatedFields.getName() != null) {
+                storedUser.setName(updatedFields.getName());
+           }
+           if (updatedFields.getHomeAddress() != null) {
+                storedUser.setHomeAddress(updatedFields.getHomeAddress());
+           }
+           usersRepository.save(storedUser);
+        }
     }
 }
