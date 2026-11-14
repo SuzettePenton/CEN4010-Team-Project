@@ -1,0 +1,24 @@
+@baseUrl = http://localhost:8081
+@userId = 407
+
+### 1 Add Clean Code (expect 201 Created, no body)
+POST {{baseUrl}}/api/cart?userId={{userId}}&bookId=1
+
+### 2 Add The Pragmatic Programmer (expect 201 Created, no body)
+POST {{baseUrl}}/api/cart?userId={{userId}}&bookId=2
+
+### 3 Retrieve persisted books (expect two Book objects)
+GET {{baseUrl}}/api/cart?userId={{userId}}
+
+### 4 Retrieve subtotal (expect 74.98)
+GET {{baseUrl}}/api/cart/subtotal?userId={{userId}}
+
+### 5 Delete Clean Code (expect 204 No Content)
+DELETE {{baseUrl}}/api/cart?userId={{userId}}&bookId=1
+
+### 6 Confirm only book 2 remains
+GET {{baseUrl}}/api/cart?userId={{userId}}
+
+### 7 Optional invalid book test (expect 404 Not Found)
+POST {{baseUrl}}/api/cart?userId={{userId}}&bookId=999
+
