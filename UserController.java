@@ -1,18 +1,24 @@
 package com.example.profile_management.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.profile_management.model.CreditCards;
 import com.example.profile_management.model.Users;
+import com.example.profile_management.repository.CreditCardsRepository;
 import com.example.profile_management.repository.UsersRepository;
 
 @RestController
 @RequestMapping("/profile/users")
 public class UserController {
+    private final UsersRepository usersRepository;
     private final UsersRepository usersRepository;
 
     public UserController(UsersRepository usersRepository) {
@@ -23,9 +29,15 @@ public class UserController {
     public Users getUserByUsername(@PathVariable String username) {
         return usersRepository.findById(username).orElse(null);
     }
+    @GetMapping("/{username}/credit-cards")
+    public List<CreditCards> getCreditCardByUsername(@PathVariable String username) {
+        return creditCardsRepository.findByUsername(username);
+    }
+
     @PostMapping 
     public void createNewUser(@RequestBody Users user) {
         usersRepository.save(user);
+    
 
     @PutMapping("/{username}")
     public void updateUserFields(@PathVariable String username, @RequestBody Users updatedFields) {
@@ -42,5 +54,10 @@ public class UserController {
            }
            usersRepository.save(storedUser);
         }
+    }
+         @PostMapping("/{username}/credit-cards")
+    public void createCreditCard(@PathVariable String username, @RequestBody CreditCards creditCard) {
+        creditCard.setUsername(username);
+        creditCardsRepository.save(creditCard);
     }
 }
