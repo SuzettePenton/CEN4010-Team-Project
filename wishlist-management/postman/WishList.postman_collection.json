@@ -1,0 +1,281 @@
+{
+  "info": {
+    "name": "Geek Text - Wish List (Sprint 4)",
+    "description": "Run on a fresh database (see sql/reset.sql). Use Run collection to see all pass/fail checks.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base",
+      "value": "http://localhost:8082"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Create wish list (valid)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 201', function () { pm.response.to.have.status(201); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{base}}/api/wishlists",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"userId\": 1, \"name\": \"Summer Reading\"}"
+        }
+      }
+    },
+    {
+      "name": "2. Create wish list (duplicate name -> 409)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 409', function () { pm.response.to.have.status(409); });",
+              "pm.test('Error message returned', function () { pm.expect(pm.response.json().error).to.be.a('string'); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{base}}/api/wishlists",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"userId\": 1, \"name\": \"Summer Reading\"}"
+        }
+      }
+    },
+    {
+      "name": "3. Create wish list (blank name -> 400)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 400', function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{base}}/api/wishlists",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"userId\": 1, \"name\": \"\"}"
+        }
+      }
+    },
+    {
+      "name": "4. Add book 101 to list 1 (valid)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 201', function () { pm.response.to.have.status(201); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{base}}/api/wishlists/1/books/101",
+        "header": []
+      }
+    },
+    {
+      "name": "5. Add same book again (-> 409)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 409', function () { pm.response.to.have.status(409); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{base}}/api/wishlists/1/books/101",
+        "header": []
+      }
+    },
+    {
+      "name": "6. Add book to missing list (-> 404)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 404', function () { pm.response.to.have.status(404); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{base}}/api/wishlists/9999/books/101",
+        "header": []
+      }
+    },
+    {
+      "name": "7. List books in list 1 (-> 200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('List 1 contains book 101', function () { var b = pm.response.json(); pm.expect(b.length).to.eql(1); pm.expect(b[0].bookId).to.eql(101); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{base}}/api/wishlists/1/books",
+        "header": []
+      }
+    },
+    {
+      "name": "8. Create second list 'Favorites' (valid)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 201', function () { pm.response.to.have.status(201); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{base}}/api/wishlists",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"userId\": 1, \"name\": \"Favorites\"}"
+        }
+      }
+    },
+    {
+      "name": "9. List books in empty list 2 (-> 200, empty)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Empty list returns []', function () { pm.expect(pm.response.json().length).to.eql(0); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{base}}/api/wishlists/2/books",
+        "header": []
+      }
+    },
+    {
+      "name": "10. Create third list 'Tech' (valid)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 201', function () { pm.response.to.have.status(201); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{base}}/api/wishlists",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"userId\": 1, \"name\": \"Tech\"}"
+        }
+      }
+    },
+    {
+      "name": "11. Create fourth list (-> 400, max 3)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 400', function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{base}}/api/wishlists",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"userId\": 1, \"name\": \"Overflow\"}"
+        }
+      }
+    }
+  ]
+}
