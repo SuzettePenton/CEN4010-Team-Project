@@ -35,10 +35,10 @@ public class CreditCards {
         public void setCardNumber(String cardNumber) {
             this.cardNumber = cardNumber;   
     }
-         public String name() {
+         public String getName() {
               return name;
     }
-          public void setCardUserName(String name) {
+          public void setName(String name) {
               this.name = name;
     }
           public String getCardExpirationDate() {
